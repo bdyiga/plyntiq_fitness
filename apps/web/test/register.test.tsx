@@ -37,7 +37,7 @@ describe("RequireAuth", () => {
     );
     const { router } = renderRoute("/dashboard");
     await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
-    expect(screen.getByRole("heading", { name: "Sign in" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Sign in" })).toBeInTheDocument();
   });
 
   it("sends signed-in athletes without a profile to onboarding", async () => {

@@ -157,6 +157,7 @@ export function TrendLine({
   label,
   groups,
   reversed = false,
+  dateRange,
 }: {
   data: TrendPoint[];
   format: (value: number) => string;
@@ -164,6 +165,8 @@ export function TrendLine({
   groups?: { id: string; label: string }[];
   /** Lower is better (sprint time): draw the y-axis upside down so "up" means improved. */
   reversed?: boolean;
+  /** Fixed x-axis span, so charts stacked together share one time axis. */
+  dateRange?: { from: string; to: string };
 }) {
   const points = data.map((d) => ({ ...d, t: toMs(d.date) }));
   const present = groups?.filter((g) => points.some((p) => p.group === g.id)) ?? [];
@@ -178,7 +181,8 @@ export function TrendLine({
           dataKey="t"
           type="number"
           scale="time"
-          domain={["dataMin", "dataMax"]}
+          domain={dateRange ? [toMs(dateRange.from), toMs(dateRange.to)] : ["dataMin", "dataMax"]}
+          allowDataOverflow={Boolean(dateRange)}
           padding={{ left: 12, right: 12 }}
           tickFormatter={(t: number) => shortDate(new Date(t).toISOString().slice(0, 10))}
           minTickGap={24}

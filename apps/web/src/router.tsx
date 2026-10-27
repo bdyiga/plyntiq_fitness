@@ -40,6 +40,7 @@ export const routes: RouteObject[] = [
           { path: "/history", element: <HistoryPage /> },
           // Lazy: keeps Recharts out of the main bundle.
           { path: "/progress", lazy: () => import("./pages/ProgressPage").then((m) => ({ Component: m.ProgressPage })) },
+          { path: "/report", lazy: () => import("./pages/ReportPage").then((m) => ({ Component: m.ReportPage })) },
           { path: "/settings", element: <SettingsPage /> },
         ],
       },

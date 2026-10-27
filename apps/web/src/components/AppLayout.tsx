@@ -5,6 +5,7 @@ const links = [
   { to: "/workouts/new", label: "Log" },
   { to: "/history", label: "History" },
   { to: "/progress", label: "Progress" },
+  { to: "/report", label: "Report" },
   { to: "/settings", label: "Settings" },
 ];
 

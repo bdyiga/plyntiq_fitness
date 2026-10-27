@@ -13,6 +13,7 @@ import {
 } from "@plyntiq/shared";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router";
 import { ChartCard, TrendLine, WeeklyColumns } from "../components/charts";
 import { PageHeader, SelectField } from "../components/ui";
 import { api, queryKeys, type AnalyticsRangeParams } from "../lib/api";
@@ -44,7 +45,11 @@ export function ProgressPage() {
     <div className="space-y-6">
       <PageHeader title="Progress" />
       <p className="text-sm text-slate-600">
-        What your logged training adds up to. These are measurements and estimates, not judgements.
+        What your logged training adds up to. These are measurements and estimates, not judgements. The{" "}
+        <Link to="/report" className="font-medium text-emerald-800 underline">
+          Translation report
+        </Link>{" "}
+        puts training and test results side by side.
       </p>
 
       <div role="group" aria-label="Time range" className="flex gap-1 rounded-lg bg-slate-100 p-1">

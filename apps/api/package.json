@@ -13,6 +13,7 @@
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
   },
   "dependencies": {
+    "@plyntiq/analytics": "*",
     "@plyntiq/shared": "*",
     "better-auth": "1.7.14",
     "drizzle-orm": "0.45.4",

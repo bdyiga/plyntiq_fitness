@@ -238,3 +238,25 @@ export const updateAssessmentSchema = assessmentShape
 
 export type CreateAssessmentInput = z.infer<typeof createAssessmentSchema>;
 export type UpdateAssessmentInput = z.infer<typeof updateAssessmentSchema>;
+
+/** Analytics date ranges: defaults to the last 12 weeks; at most about 2 years per request. */
+export const ANALYTICS_DEFAULT_RANGE_DAYS = 84;
+export const ANALYTICS_MAX_RANGE_DAYS = 731;
+
+const analyticsRange = {
+  from: trainingDateSchema.optional(),
+  to: trainingDateSchema.optional(),
+};
+
+export const analyticsRangeQuerySchema = z.object(analyticsRange).strict();
+
+export const strengthAnalyticsQuerySchema = z
+  .object({ ...analyticsRange, exerciseId: z.string().min(1).max(64).optional() })
+  .strict();
+
+export const translationQuerySchema = z
+  .object({
+    definitionId: z.enum(ASSESSMENT_DEFINITIONS.map((d) => d.id) as [string, ...string[]]),
+    exerciseId: z.string().min(1).max(64).optional(),
+  })
+  .strict();

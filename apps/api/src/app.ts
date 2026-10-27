@@ -10,6 +10,7 @@ import type { AppDependencies, AppEnv } from "./env";
 import { apiError, ValidationError } from "./lib/http";
 import { mailerFor } from "./lib/mailer";
 import { originCheck } from "./lib/origin-check";
+import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { exportRoutes } from "./modules/account/export.routes";
 import { exerciseRoutes } from "./modules/exercises/exercises.routes";
 import { workoutRoutes } from "./modules/workouts/workouts.routes";
@@ -56,6 +57,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route("/workouts", workoutRoutes);
   app.route("/conditioning", conditioningRoutes);
   app.route("/assessments", assessmentRoutes);
+  app.route("/analytics", analyticsRoutes);
 
   app.notFound((c) => apiError(c, 404, "not_found", "Route not found"));
 

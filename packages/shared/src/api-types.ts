@@ -1,4 +1,14 @@
 import type {
+  Consistency,
+  DailyAssessment,
+  PersonalRecord,
+  TranslationResult,
+  WeeklyBestE1rm,
+  WeeklyConditioning,
+  WeeklyFrequency,
+  WeeklyVolume,
+} from "@plyntiq/analytics";
+import type {
   AssessmentDefinitionId,
   AssessmentFootwear,
   AssessmentMethod,
@@ -112,4 +122,43 @@ export interface AssessmentResultDto {
   notes: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+/** Analytics responses (M3). Numbers are full precision; round only for display. */
+export interface AnalyticsRange {
+  from: string;
+  to: string;
+}
+
+export interface StrengthAnalyticsDto {
+  range: AnalyticsRange;
+  /** Null when no exercise was requested: volume then covers every exercise. */
+  exercise: Pick<ExerciseDto, "id" | "name" | "isLowerBody"> | null;
+  weeklyVolume: WeeklyVolume[];
+  /** Estimated (Epley, 1–10 reps). Empty without an exercise. */
+  bestE1rmByWeek: WeeklyBestE1rm[];
+  /** PRs dated within the range, judged against the athlete's full history. Empty without an exercise. */
+  personalRecords: PersonalRecord[];
+  /** All training, not just the selected exercise. */
+  weeklyFrequency: WeeklyFrequency[];
+  consistency: Consistency;
+}
+
+export interface ConditioningAnalyticsDto {
+  range: AnalyticsRange;
+  weeks: WeeklyConditioning[];
+}
+
+export interface AssessmentAnalyticsDto {
+  range: AnalyticsRange;
+  definition: Pick<AssessmentDefinitionDto, "id" | "name" | "canonicalUnit" | "betterDirection">;
+  days: DailyAssessment[];
+}
+
+export interface TranslationDto {
+  /** The exercise compared, or null when the athlete has logged no lower-body lifts. */
+  exercise: Pick<ExerciseDto, "id" | "name"> | null;
+  /** Lower-body exercises the athlete has logged, for switching the comparison. */
+  exerciseOptions: Pick<ExerciseDto, "id" | "name">[];
+  result: TranslationResult;
 }

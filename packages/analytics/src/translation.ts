@@ -29,8 +29,8 @@ export interface TranslationInput {
   definitionId: string;
   betterDirection: BetterDirection;
   assessments: readonly AssessmentInput[];
-  /** Sets for the one exercise being compared. */
-  exerciseId: string;
+  /** The one exercise being compared, or null when the athlete has none to compare. */
+  exerciseId: string | null;
   sets: readonly StrengthSetInput[];
   /** The athlete's current local date, for the staleness check. */
   today: IsoDate;
@@ -51,7 +51,7 @@ export interface TrainingPoint {
 
 export interface TranslationResult {
   definitionId: string;
-  exerciseId: string;
+  exerciseId: string | null;
   window: { from: IsoDate; to: IsoDate; days: number } | null;
   assessment: {
     first: DailyAssessment | null;

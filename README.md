@@ -41,6 +41,8 @@ npm run db:migrate:local                          # create local D1 tables + see
 npm run dev                                       # API on :8787, web on :5173 (open this one)
 ```
 
+To try it on a phone, run `npm run dev:phone` and scan the QR code it prints. It serves the dev app through a temporary Cloudflare quick tunnel (`https://*.trycloudflare.com`, stops on Ctrl+C), so it works on any network. Anyone with the link can reach it while it runs, so use test data only.
+
 Vite proxies `/api` to the Worker, so the browser only talks to `http://localhost:5173`. In development, password-reset emails are printed to the Wrangler console.
 
 ## Tests

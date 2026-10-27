@@ -1,4 +1,13 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
+
+export const inputClass =
+  "block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600";
 
 export function Card({ children }: { children: ReactNode }) {
   return <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">{children}</div>;
@@ -59,5 +68,86 @@ export function AuthShell({ title, children }: { title: string; children: ReactN
         {children}
       </Card>
     </main>
+  );
+}
+
+function FieldError({ id, error }: { id: string | undefined; error: string | undefined }) {
+  if (!error) return null;
+  return (
+    <p id={`${id}-error`} className="text-sm text-red-700">
+      {error}
+    </p>
+  );
+}
+
+/** Outline button for secondary actions; does not stretch to full width. */
+export function SecondaryButton({ className = "", ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      type="button"
+      className={`inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 disabled:opacity-60 ${className}`}
+      {...props}
+    />
+  );
+}
+
+interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  label: string;
+  error?: string | undefined;
+  children: ReactNode;
+}
+
+export function SelectField({ label, error, id, children, ...props }: SelectFieldProps) {
+  const selectId = id ?? props.name;
+  return (
+    <div className="space-y-1">
+      <label htmlFor={selectId} className="block text-sm font-medium text-slate-700">
+        {label}
+      </label>
+      <select
+        id={selectId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${selectId}-error` : undefined}
+        className={inputClass}
+        {...props}
+      >
+        {children}
+      </select>
+      <FieldError id={selectId} error={error} />
+    </div>
+  );
+}
+
+interface TextAreaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label: string;
+  error?: string | undefined;
+}
+
+export function TextAreaField({ label, error, id, ...props }: TextAreaFieldProps) {
+  const areaId = id ?? props.name;
+  return (
+    <div className="space-y-1">
+      <label htmlFor={areaId} className="block text-sm font-medium text-slate-700">
+        {label}
+      </label>
+      <textarea
+        id={areaId}
+        rows={3}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${areaId}-error` : undefined}
+        className={inputClass}
+        {...props}
+      />
+      <FieldError id={areaId} error={error} />
+    </div>
+  );
+}
+
+export function PageHeader({ title, children }: { title: string; children?: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <h1 className="text-2xl font-semibold">{title}</h1>
+      {children}
+    </div>
   );
 }

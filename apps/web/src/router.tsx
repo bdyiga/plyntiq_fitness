@@ -1,14 +1,18 @@
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { AppLayout } from "./components/AppLayout";
 import { RequireAuth } from "./components/RequireAuth";
+import { AssessmentFormPage } from "./pages/AssessmentFormPage";
+import { ConditioningFormPage } from "./pages/ConditioningFormPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { HistoryPage } from "./pages/HistoryPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OnboardingPage } from "./pages/OnboardingPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { WorkoutLoggerPage } from "./pages/WorkoutLoggerPage";
 
 export const routes: RouteObject[] = [
   { path: "/", element: <LandingPage /> },
@@ -27,6 +31,13 @@ export const routes: RouteObject[] = [
         element: <AppLayout />,
         children: [
           { path: "/dashboard", element: <DashboardPage /> },
+          { path: "/workouts/new", element: <WorkoutLoggerPage /> },
+          { path: "/workouts/:id/edit", element: <WorkoutLoggerPage /> },
+          { path: "/conditioning/new", element: <ConditioningFormPage /> },
+          { path: "/conditioning/:id/edit", element: <ConditioningFormPage /> },
+          { path: "/assessments/new", element: <AssessmentFormPage /> },
+          { path: "/assessments/:id/edit", element: <AssessmentFormPage /> },
+          { path: "/history", element: <HistoryPage /> },
           { path: "/settings", element: <SettingsPage /> },
         ],
       },

@@ -95,10 +95,14 @@ export const MAX_SETS_PER_WORKOUT = 100;
 export const workoutSetInputSchema = z
   .object({
     exerciseId: z.string().min(1).max(64),
-    reps: z.number().int("Reps must be a whole number").min(1).max(100),
-    loadValue: z.number().min(0, "Load cannot be negative").max(2000),
+    reps: z.number({ error: "Enter reps" }).int("Reps must be a whole number").min(1, "Reps must be 1–100").max(100, "Reps must be 1–100"),
+    loadValue: z.number({ error: "Enter a load (0 for bodyweight)" }).min(0, "Load cannot be negative").max(2000, "Load is too high"),
     loadUnit: z.enum(WEIGHT_UNITS),
-    rpe: z.number().min(1).max(10).multipleOf(0.5, "Use whole or half RPE values").nullish().transform((v) => v ?? null),
+    rpe: z
+      .number({ error: "RPE must be a number" })
+      .min(1, "RPE must be 1–10")
+      .max(10, "RPE must be 1–10")
+      .multipleOf(0.5, "Use whole or half RPE values").nullish().transform((v) => v ?? null),
   })
   .strict();
 
@@ -144,11 +148,11 @@ const conditioningFields = {
   sessionDate: trainingDateSchema,
   type: z.enum(CONDITIONING_TYPES),
   /** Seconds; the web form parses "mm:ss" with `parseDuration`. */
-  durationS: z.number().gt(0, "Duration must be more than zero").max(MAX_DURATION_S, "Use 24 hours or less"),
-  distanceValue: z.number().gt(0, "Distance must be more than zero").max(1000).nullable(),
+  durationS: z.number({ error: "Enter a duration" }).gt(0, "Duration must be more than zero").max(MAX_DURATION_S, "Use 24 hours or less"),
+  distanceValue: z.number({ error: "Enter a distance" }).gt(0, "Distance must be more than zero").max(1000, "Distance is too long").nullable(),
   distanceUnit: z.enum(DISTANCE_UNITS).nullable(),
   /** Session RPE on Foster's CR-10 scale (0 = rest, 10 = maximal). */
-  sessionRpe: z.number().min(0).max(10).multipleOf(0.5, "Use whole or half RPE values"),
+  sessionRpe: z.number({ error: "Choose a session RPE" }).min(0).max(10).multipleOf(0.5, "Use whole or half RPE values"),
   notes: optionalNotes,
 };
 
@@ -195,9 +199,9 @@ const assessmentShape = z
   .object({
     definitionId: z.enum(ASSESSMENT_DEFINITIONS.map((d) => d.id) as [string, ...string[]]),
     assessedOn: trainingDateSchema,
-    value: z.number().gt(0, "Value must be more than zero").max(1000),
+    value: z.number({ error: "Enter a result" }).gt(0, "Value must be more than zero").max(1000),
     unit: z.string().max(8),
-    method: z.enum(keysOf(ASSESSMENT_METHODS)),
+    method: z.enum(keysOf(ASSESSMENT_METHODS), { error: "Choose how it was measured" }),
     surface: z.enum(keysOf(ASSESSMENT_SURFACES)).nullish().transform((v) => v ?? null),
     footwear: z.enum(keysOf(ASSESSMENT_FOOTWEAR)).nullish().transform((v) => v ?? null),
     conditionsNote: z.string().trim().max(200, "Use 200 characters or fewer").nullish().transform((s) => (s ? s : null)),

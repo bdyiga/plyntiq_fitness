@@ -1,0 +1,29 @@
+{
+  "name": "@plyntiq/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mkdir -p ../web/dist && wrangler dev",
+    "deploy": "npm run build --prefix ../.. && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "cf-typegen": "wrangler types --strict-vars=false",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+  },
+  "dependencies": {
+    "@plyntiq/shared": "*",
+    "better-auth": "1.7.14",
+    "drizzle-orm": "0.45.4",
+    "hono": "4.13.14",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.23.0",
+    "drizzle-kit": "0.31.11",
+    "typescript": "6.0.3",
+    "vitest": "~4.1.12",
+    "wrangler": "4.153.0"
+  }
+}

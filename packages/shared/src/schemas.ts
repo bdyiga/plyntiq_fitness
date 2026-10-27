@@ -1,5 +1,9 @@
 import { z } from "zod";
 import {
+  ASSESSMENT_DEFINITIONS,
+  ASSESSMENT_FOOTWEAR,
+  ASSESSMENT_METHODS,
+  ASSESSMENT_SURFACES,
   ATHLETIC_GOALS,
   CONDITIONING_TYPES,
   DISTANCE_UNITS,
@@ -7,6 +11,7 @@ import {
   SPORTS,
   WEIGHT_UNITS,
 } from "./catalog";
+import { toAssessmentCanonical } from "./units";
 
 const sportIds = SPORTS.map((s) => s.id) as [string, ...string[]];
 const goalIds = ATHLETIC_GOALS.map((g) => g.id) as [string, ...string[]];
@@ -178,3 +183,54 @@ export const updateConditioningSchema = z
 
 export type CreateConditioningInput = z.infer<typeof createConditioningSchema>;
 export type UpdateConditioningInput = z.infer<typeof updateConditioningSchema>;
+
+const keysOf = <T extends Record<string, string>>(o: T) => Object.keys(o) as [keyof T & string, ...(keyof T & string)[]];
+
+/**
+ * Field shapes only; `assessmentRules` checks the fields that depend on the
+ * definition (unit, method, plausible range). PATCH merges the stored result
+ * with the patch and re-validates the whole thing with `createAssessmentSchema`.
+ */
+const assessmentShape = z
+  .object({
+    definitionId: z.enum(ASSESSMENT_DEFINITIONS.map((d) => d.id) as [string, ...string[]]),
+    assessedOn: trainingDateSchema,
+    value: z.number().gt(0, "Value must be more than zero").max(1000),
+    unit: z.string().max(8),
+    method: z.enum(keysOf(ASSESSMENT_METHODS)),
+    surface: z.enum(keysOf(ASSESSMENT_SURFACES)).nullish().transform((v) => v ?? null),
+    footwear: z.enum(keysOf(ASSESSMENT_FOOTWEAR)).nullish().transform((v) => v ?? null),
+    conditionsNote: z.string().trim().max(200, "Use 200 characters or fewer").nullish().transform((s) => (s ? s : null)),
+    notes: optionalNotes,
+  })
+  .strict();
+
+export const createAssessmentSchema = assessmentShape.superRefine((v, ctx) => {
+  const def = ASSESSMENT_DEFINITIONS.find((d) => d.id === v.definitionId);
+  if (!def) return;
+  if (!(def.units as readonly string[]).includes(v.unit)) {
+    ctx.addIssue({ code: "custom", path: ["unit"], message: `Use ${def.units.join(" or ")}` });
+    return;
+  }
+  if (!(def.methods as readonly string[]).includes(v.method)) {
+    ctx.addIssue({ code: "custom", path: ["method"], message: `Not a ${def.name} method` });
+  }
+  const canonical = toAssessmentCanonical(v.value, v.unit as "s" | "cm" | "in");
+  if (canonical < def.min || canonical > def.max) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["value"],
+      message: `Expected ${def.min}–${def.max} ${def.units[0]}; check the value and unit`,
+    });
+  }
+});
+
+/** The definition cannot change; delete and re-log instead. */
+export const updateAssessmentSchema = assessmentShape
+  .omit({ definitionId: true })
+  .partial()
+  .strict()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to update");
+
+export type CreateAssessmentInput = z.infer<typeof createAssessmentSchema>;
+export type UpdateAssessmentInput = z.infer<typeof updateAssessmentSchema>;

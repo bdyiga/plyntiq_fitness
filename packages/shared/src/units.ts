@@ -126,3 +126,12 @@ export function formatDuration(totalSeconds: number): string {
   const s = String(t % 60).padStart(2, "0");
   return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
 }
+
+/** Canonical assessment value: seconds stay seconds; heights go to cm. */
+export function toAssessmentCanonical(value: number, unit: "s" | HeightUnit): number {
+  if (unit === "s") {
+    assertMeasurement(value);
+    return value;
+  }
+  return toCm(value, unit);
+}

@@ -1,4 +1,9 @@
 import type {
+  AssessmentDefinitionId,
+  AssessmentFootwear,
+  AssessmentMethod,
+  AssessmentSurface,
+  AssessmentUnit,
   AthleticGoalId,
   ConditioningType,
   DistanceUnit,
@@ -77,6 +82,33 @@ export interface ConditioningSessionDto {
   /** Canonical distance computed by the server. */
   distanceM: number | null;
   sessionRpe: number;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssessmentDefinitionDto {
+  id: AssessmentDefinitionId;
+  name: string;
+  quality: string;
+  canonicalUnit: string;
+  units: string[];
+  betterDirection: "lower" | "higher";
+  allowedMethods: AssessmentMethod[];
+}
+
+export interface AssessmentResultDto {
+  id: string;
+  definitionId: AssessmentDefinitionId;
+  assessedOn: string;
+  value: number;
+  unit: AssessmentUnit;
+  /** Canonical value (s or cm) computed by the server. */
+  valueCanonical: number;
+  method: AssessmentMethod;
+  surface: AssessmentSurface | null;
+  footwear: AssessmentFootwear | null;
+  conditionsNote: string | null;
   notes: string | null;
   createdAt: string;
   updatedAt: string;

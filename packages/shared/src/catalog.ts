@@ -83,3 +83,77 @@ export const EXERCISES = [
 
 export const CONDITIONING_TYPES = ["run", "sprint", "intervals", "other"] as const;
 export type ConditioningType = (typeof CONDITIONING_TYPES)[number];
+
+/**
+ * How a result was measured. Results from different methods are not directly
+ * comparable (hand timing reads faster than gates), so M3 flags comparisons
+ * across methods instead of hiding them.
+ */
+export const ASSESSMENT_METHODS = {
+  hand_timed: "Hand timing",
+  timing_gates: "Timing gates",
+  video_app: "Video app",
+  jump_mat: "Jump mat",
+  force_plate: "Force plate",
+  wall_reach: "Wall / Vertec reach",
+  other: "Other",
+} as const;
+export type AssessmentMethod = keyof typeof ASSESSMENT_METHODS;
+
+export const ASSESSMENT_SURFACES = {
+  grass: "Grass",
+  artificial_turf: "Artificial turf",
+  track: "Track",
+  indoor: "Indoor / court",
+  other: "Other",
+} as const;
+export type AssessmentSurface = keyof typeof ASSESSMENT_SURFACES;
+
+export const ASSESSMENT_FOOTWEAR = {
+  boots: "Boots / cleats",
+  spikes: "Spikes",
+  trainers: "Trainers",
+  barefoot: "Barefoot",
+  other: "Other",
+} as const;
+export type AssessmentFootwear = keyof typeof ASSESSMENT_FOOTWEAR;
+
+/**
+ * Seeded by migration (enforced by test). `units[0]` is the canonical unit;
+ * `min`/`max` bound plausible canonical values to catch typos (e.g. 31 s for
+ * 3.1 s), not to judge performance.
+ */
+export const ASSESSMENT_DEFINITIONS = [
+  {
+    id: "sprint_20m",
+    name: "20 m sprint",
+    quality: "speed",
+    units: ["s"],
+    betterDirection: "lower",
+    min: 2,
+    max: 10,
+    methods: ["hand_timed", "timing_gates", "video_app", "other"],
+  },
+  {
+    id: "vertical_jump",
+    name: "Vertical jump",
+    quality: "power",
+    units: ["cm", "in"],
+    betterDirection: "higher",
+    min: 5,
+    max: 150,
+    methods: ["jump_mat", "force_plate", "video_app", "wall_reach", "other"],
+  },
+] as const satisfies readonly {
+  id: string;
+  name: string;
+  quality: string;
+  units: readonly [string, ...string[]];
+  betterDirection: "lower" | "higher";
+  min: number;
+  max: number;
+  methods: readonly AssessmentMethod[];
+}[];
+
+export type AssessmentDefinitionId = (typeof ASSESSMENT_DEFINITIONS)[number]["id"];
+export type AssessmentUnit = (typeof ASSESSMENT_DEFINITIONS)[number]["units"][number];

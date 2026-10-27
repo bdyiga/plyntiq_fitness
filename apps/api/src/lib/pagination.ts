@@ -37,8 +37,9 @@ export interface PageQuery {
   after: CursorKey | null;
 }
 
-export function parsePageQuery(c: Context): PageQuery {
-  const result = pageQuerySchema.safeParse(c.req.query());
+/** Pass `query` when the route takes filters besides limit and cursor; unknown keys are rejected. */
+export function parsePageQuery(c: Context, query: Record<string, string> = c.req.query()): PageQuery {
+  const result = pageQuerySchema.safeParse(query);
   if (!result.success) {
     throw new ValidationError(result.error.issues.map((i) => ({ path: i.path.join("."), message: i.message })));
   }

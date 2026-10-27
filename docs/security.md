@@ -29,7 +29,7 @@ Browser ↔ Worker (untrusted input) · Worker ↔ D1 · Worker ↔ AI provider 
 - [x] Cross-account tests (profile)
 - [x] Session invalidation on sign-out and reset
 - [x] Cascade deletion verified
-- [ ] Email provider configured; email verification on
+- [ ] Email provider configured; email verification on (provider choice deferred by owner on 2026-10-26; decide before beta)
 - [ ] Production `BETTER_AUTH_SECRET` set; `APP_ORIGIN` and `BETTER_AUTH_URL` set to the production domain
 - [ ] Workers Paid plan (scrypt CPU, [ADR 0003](adr/0003-password-hashing-cpu.md))
 - [ ] Cross-account tests for workouts, conditioning, assessments and imports

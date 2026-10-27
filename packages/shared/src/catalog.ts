@@ -8,6 +8,8 @@ export const SPORTS = [
   { id: "rugby_union", name: "Rugby union" },
   { id: "rugby_league", name: "Rugby league" },
   { id: "rugby_sevens", name: "Rugby sevens" },
+  // For athletes whose sport isn't listed yet; analytics are goal-driven, so it works the same way.
+  { id: "other", name: "Other / general athlete" },
 ] as const;
 
 export type SportId = (typeof SPORTS)[number]["id"];

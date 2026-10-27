@@ -93,3 +93,13 @@ export function toDto(row: typeof exercises.$inferSelect): ExerciseDto {
     isCustom: row.ownerUserId !== null,
   };
 }
+
+/** The athlete's own exercises, archived ones included (export). */
+export async function ownExercises(db: Database, userId: string) {
+  const rows = await db
+    .select()
+    .from(exercises)
+    .where(eq(exercises.ownerUserId, userId))
+    .orderBy(asc(exercises.createdAt));
+  return rows.map((r) => ({ ...toDto(r), archivedAt: r.archivedAt?.toISOString() ?? null }));
+}

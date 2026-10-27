@@ -12,7 +12,7 @@ Browser ↔ Worker (untrusted input) · Worker ↔ D1 · Worker ↔ AI provider 
 | Credential stuffing / brute force | Per-IP rate limits on sign-in, sign-up and reset; generic errors; 12-character minimum password | ✅ tested |
 | Session theft through XSS | HttpOnly cookie; token stripped from JSON; CSP (`script-src 'self'`); React escaping; no `dangerouslySetInnerHTML` | ✅ (CSP applies to assets via `_headers`) |
 | CSRF | SameSite=Lax; Origin check; JSON-only; Better Auth trusted origins | ✅ tested |
-| IDOR / cross-account access | Identity taken from the session only; user-scoped repositories; strict schemas; 404 on foreign IDs | ✅ tested for profile; **required for each new module** |
+| IDOR / cross-account access | Identity taken from the session only; user-scoped repositories; strict schemas; 404 on foreign IDs; sets may only reference global or own exercises; pagination cursors carry no ownership | ✅ tested for profile, exercises, workouts, conditioning and assessments; **required for imports (M3)** |
 | Account enumeration | Identical sign-in errors; reset always returns 200 | ✅ tested |
 | SQL injection | Drizzle parameterized queries; no raw SQL with interpolated input | ✅ |
 | Oversized payloads / DoS | 64 KB body limit; per-route upload limits later; Cloudflare edge protection | ✅ |
@@ -32,7 +32,8 @@ Browser ↔ Worker (untrusted input) · Worker ↔ D1 · Worker ↔ AI provider 
 - [ ] Email provider configured; email verification on (provider choice deferred by owner on 2026-10-26; decide before beta)
 - [ ] Production `BETTER_AUTH_SECRET` set; `APP_ORIGIN` and `BETTER_AUTH_URL` set to the production domain
 - [ ] Workers Paid plan (scrypt CPU, [ADR 0003](adr/0003-password-hashing-cpu.md))
-- [ ] Cross-account tests for workouts, conditioning, assessments and imports
+- [x] Cross-account tests for exercises, workouts, conditioning and assessments (M2): GET/PATCH/DELETE on foreign IDs → 404, foreign exercise in a set → 400, foreign cursor → no rows, cascade on account deletion
+- [ ] Cross-account tests for imports (M3)
 - [ ] Upload fuzzing and formula-injection tests
 - [ ] AI prompt-injection and leakage evaluation suite passing
 - [ ] `npm audit` reviewed; Dependabot enabled

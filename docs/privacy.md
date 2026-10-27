@@ -10,7 +10,7 @@
 | Session IP and user agent | Security (session list, abuse) | Session lifetime (≤ 7 days after expiry) |
 | Rate-limit counters (keyed by IP and path) | Abuse prevention | Rolling window |
 
-Later milestones add training records, assessments and imports (stored until the athlete deletes them), and AI usage metadata (token counts only, no prompt text, 90 days).
+Training records (custom exercises, workouts and sets, conditioning sessions, sprint and jump results with how and where they were measured, and free-text notes) are stored until the athlete deletes them or their account (M2). Later milestones add imports, and AI usage metadata (token counts only, no prompt text, 90 days).
 
 **Not collected:** date of birth, sex, body measurements, location or device sensors.
 

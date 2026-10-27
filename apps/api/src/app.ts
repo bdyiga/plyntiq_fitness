@@ -11,6 +11,7 @@ import { apiError, ValidationError } from "./lib/http";
 import { mailerFor } from "./lib/mailer";
 import { originCheck } from "./lib/origin-check";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
+import { csvExportRoutes } from "./modules/account/csv-export.routes";
 import { exportRoutes } from "./modules/account/export.routes";
 import { exerciseRoutes } from "./modules/exercises/exercises.routes";
 import { workoutRoutes } from "./modules/workouts/workouts.routes";
@@ -53,6 +54,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.use(loadSession);
   app.route("/me", meRoutes);
   app.route("/me/export", exportRoutes);
+  app.route("/me/export", csvExportRoutes);
   app.route("/exercises", exerciseRoutes);
   app.route("/workouts", workoutRoutes);
   app.route("/conditioning", conditioningRoutes);

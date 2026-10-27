@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
@@ -14,6 +14,7 @@ import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { csvExportRoutes } from "./modules/account/csv-export.routes";
 import { exportRoutes } from "./modules/account/export.routes";
 import { exerciseRoutes } from "./modules/exercises/exercises.routes";
+import { importRoutes } from "./modules/imports/imports.routes";
 import { workoutRoutes } from "./modules/workouts/workouts.routes";
 import { conditioningRoutes } from "./modules/conditioning/conditioning.routes";
 import { assessmentRoutes } from "./modules/assessments/assessments.routes";
@@ -28,12 +29,11 @@ export function createApp(deps: AppDependencies = {}) {
     c.header("Cache-Control", "no-store");
     await next();
   });
-  app.use(
-    bodyLimit({
-      maxSize: 64 * 1024,
-      onError: (c) => apiError(c, 413, "payload_too_large", "Request body too large"),
-    }),
-  );
+  const tooLarge = (c: Context) => apiError(c, 413, "payload_too_large", "Request body too large");
+  const defaultLimit = bodyLimit({ maxSize: 64 * 1024, onError: tooLarge });
+  // CSV uploads: up to 1 MB of text, which JSON escaping can roughly double.
+  const importLimit = bodyLimit({ maxSize: 2.5 * 1024 * 1024, onError: tooLarge });
+  app.use((c, next) => (c.req.method === "POST" && c.req.path === "/api/imports" ? importLimit : defaultLimit)(c, next));
   app.use(async (c, next) => {
     const db = createDb(c.env.DB);
     const mailer = deps.mailer?.(c.env) ?? mailerFor(c.env);
@@ -60,6 +60,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route("/conditioning", conditioningRoutes);
   app.route("/assessments", assessmentRoutes);
   app.route("/analytics", analyticsRoutes);
+  app.route("/imports", importRoutes);
 
   app.notFound((c) => apiError(c, 404, "not_found", "Route not found"));
 

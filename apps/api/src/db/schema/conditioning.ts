@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
+import { importJobs } from "./imports";
 
 export const conditioningSessions = sqliteTable(
   "conditioning_sessions",
@@ -19,6 +20,8 @@ export const conditioningSessions = sqliteTable(
     /** Foster CR-10 session RPE. */
     sessionRpe: real("session_rpe").notNull(),
     notes: text("notes"),
+    /** Set when the row came from a CSV import (provenance and undo). */
+    importJobId: text("import_job_id").references(() => importJobs.id, { onDelete: "set null" }),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`(unixepoch('subsec') * 1000)`),

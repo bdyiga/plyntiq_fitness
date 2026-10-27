@@ -11,6 +11,7 @@ import {
   SPORTS,
   WEIGHT_UNITS,
 } from "./catalog";
+import { CSV_KINDS } from "./csv";
 import { toAssessmentCanonical } from "./units";
 
 const sportIds = SPORTS.map((s) => s.id) as [string, ...string[]];
@@ -260,3 +261,16 @@ export const translationQuerySchema = z
     exerciseId: z.string().min(1).max(64).optional(),
   })
   .strict();
+
+/** CSV import (M3): the browser reads the file and sends its text as JSON, so the origin check's JSON rule holds. */
+export const IMPORT_MAX_CHARS = 1_000_000;
+export const IMPORT_MAX_ROWS = 2000;
+
+export const createImportSchema = z
+  .object({
+    kind: z.enum(CSV_KINDS),
+    csv: z.string().min(1, "The file is empty").max(IMPORT_MAX_CHARS, "Use a file of 1 MB or less"),
+  })
+  .strict();
+
+export type CreateImportInput = z.infer<typeof createImportSchema>;

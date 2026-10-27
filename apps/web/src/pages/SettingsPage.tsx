@@ -1,7 +1,7 @@
 import { CSV_KINDS, type CsvKind } from "@plyntiq/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button, Card, Field, FormError } from "../components/ui";
 import { authClient } from "../lib/auth-client";
 import { useMe } from "../lib/use-me";
@@ -56,8 +56,11 @@ export function SettingsPage() {
           Export my data
         </a>
         <p className="mt-4 text-slate-600">
-          Or download your records as spreadsheets (CSV). These use the same columns as the import template, so you can
-          re-import them.
+          Or download your records as spreadsheets (CSV). These use the same columns as the{" "}
+          <Link to="/import" className="font-medium text-emerald-800 underline">
+            CSV import
+          </Link>
+          , so you can re-import them.
         </p>
         <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           {CSV_KINDS.map((kind) => (

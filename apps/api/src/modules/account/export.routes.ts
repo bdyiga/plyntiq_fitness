@@ -7,6 +7,7 @@ import { allAssessments } from "../assessments/assessment.repository";
 import { findProfile } from "../athletes/profile.repository";
 import { allConditioning } from "../conditioning/conditioning.repository";
 import { ownExercises } from "../exercises/exercise.repository";
+import { allJobs } from "../imports/import.repository";
 import { allWorkouts } from "../workouts/workout.repository";
 
 /**
@@ -28,19 +29,20 @@ export const exportRoutes = new Hono<AppEnv>().use(requireAuth).get("/", async (
       updatedAt: true,
     },
   });
-  const [profile, customExercises, workouts, conditioning, assessmentResults] = await Promise.all([
+  const [profile, customExercises, workouts, conditioning, assessmentResults, imports] = await Promise.all([
     findProfile(c.var.db, userId),
     ownExercises(c.var.db, userId),
     allWorkouts(c.var.db, userId),
     allConditioning(c.var.db, userId),
     allAssessments(c.var.db, userId),
+    allJobs(c.var.db, userId),
   ]);
 
   c.header("Content-Disposition", `attachment; filename="plyntiq-export-${new Date().toISOString().slice(0, 10)}.json"`);
   c.header("Cache-Control", "no-store");
   return c.json({
-    // v2 (M2): training records added.
-    exportFormatVersion: 2,
+    // v2 (M2): training records added. v3 (M3): CSV import job metadata.
+    exportFormatVersion: 3,
     exportedAt: new Date().toISOString(),
     account: user,
     athleteProfile: profile,
@@ -48,5 +50,6 @@ export const exportRoutes = new Hono<AppEnv>().use(requireAuth).get("/", async (
     workouts,
     conditioning,
     assessmentResults,
+    imports,
   });
 });

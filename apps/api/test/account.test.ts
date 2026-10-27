@@ -45,7 +45,7 @@ describe("data export", () => {
       conditioning: { notes: string }[];
       assessmentResults: { notes: string; method: string }[];
     };
-    expect(body.exportFormatVersion).toBe(2);
+    expect(body.exportFormatVersion).toBe(3);
     expect(body.customExercises).toEqual([expect.objectContaining({ name: "alice lift", archivedAt: null })]);
     expect(body.workouts).toEqual([expect.objectContaining({ notes: "alice" })]);
     expect(body.workouts[0]!.sets).toEqual([expect.objectContaining({ exerciseName: "alice lift", loadKg: 100 })]);

@@ -8,8 +8,11 @@ import type {
   CreateAssessmentInput,
   CreateConditioningInput,
   CreateExerciseInput,
+  CreateImportInput,
   CreateWorkoutInput,
   ExerciseDto,
+  ImportJobDto,
+  ImportPreviewDto,
   MeDto,
   Page,
   StrengthAnalyticsDto,
@@ -124,6 +127,16 @@ export const api = {
     ),
   translation: (p: { definitionId: string; exerciseId?: string | undefined }) =>
     request<TranslationDto>(`/api/analytics/translation${pageQuery({ ...p })}`),
+
+  imports: () => request<{ imports: ImportJobDto[] }>("/api/imports").then((r) => r.imports),
+  uploadImport: (input: CreateImportInput) => request<ImportPreviewDto>("/api/imports", json("POST", input)),
+  // An empty JSON body: the API's origin check requires JSON on every POST.
+  confirmImport: (id: string) =>
+    request<{ job: ImportJobDto }>(`/api/imports/${encodeURIComponent(id)}/confirm`, json("POST", {})).then((r) => r.job),
+  undoImport: (id: string) =>
+    request<{ result: "cancelled" | "undone"; removed: number }>(`/api/imports/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    }),
 };
 
 export interface AnalyticsRangeParams {
@@ -141,6 +154,7 @@ export const queryKeys = {
   assessmentDefinitions: ["assessment-definitions"] as const,
   assessments: ["assessments"] as const,
   assessment: (id: string) => ["assessments", id] as const,
+  imports: ["imports"] as const,
   /** Prefix for analytics queries. They use the default staleTime (0), so they refetch whenever a page mounts. */
   analytics: ["analytics"] as const,
 };

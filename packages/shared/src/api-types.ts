@@ -21,6 +21,7 @@ import type {
   SportId,
   WeightUnit,
 } from "./catalog";
+import type { CsvKind } from "./csv";
 
 /** Error envelope returned by every non-auth API route. */
 export interface ApiError {
@@ -161,4 +162,33 @@ export interface TranslationDto {
   /** Lower-body exercises the athlete has logged, for switching the comparison. */
   exerciseOptions: Pick<ExerciseDto, "id" | "name">[];
   result: TranslationResult;
+}
+
+export interface ImportJobDto {
+  id: string;
+  kind: CsvKind;
+  status: "preview" | "confirmed";
+  rowCount: number;
+  acceptedCount: number;
+  rejectedCount: number;
+  createdAt: string;
+  /** Preview jobs (and their staged rows) are deleted after this. */
+  expiresAt: string;
+  confirmedAt: string | null;
+}
+
+export interface ImportRowIssue {
+  /** 1-based line number in the file, counting the header as line 1. */
+  rowNumber: number;
+  field: string;
+  message: string;
+}
+
+export interface ImportPreviewDto {
+  job: ImportJobDto;
+  /** The first valid rows, as they will be saved, for the athlete to check. */
+  sample: { rowNumber: number; cells: Record<string, string> }[];
+  errors: ImportRowIssue[];
+  /** Valid rows that look like records the athlete already has. They will still be imported. */
+  warnings: ImportRowIssue[];
 }

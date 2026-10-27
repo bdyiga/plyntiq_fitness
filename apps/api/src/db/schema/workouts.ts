@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
+import { importJobs } from "./imports";
 import { exercises } from "./exercises";
 
 const timestamps = {
@@ -22,6 +23,8 @@ export const workouts = sqliteTable(
     /** The athlete's local calendar day, YYYY-MM-DD (ADR 0004). */
     workoutDate: text("workout_date").notNull(),
     notes: text("notes"),
+    /** Set when the row came from a CSV import (provenance and undo). */
+    importJobId: text("import_job_id").references(() => importJobs.id, { onDelete: "set null" }),
     ...timestamps,
   },
   (t) => [

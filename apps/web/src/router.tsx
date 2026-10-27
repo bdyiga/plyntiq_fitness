@@ -6,6 +6,7 @@ import { ConditioningFormPage } from "./pages/ConditioningFormPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { HistoryPage } from "./pages/HistoryPage";
+import { ImportPage } from "./pages/ImportPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OnboardingPage } from "./pages/OnboardingPage";
@@ -38,6 +39,7 @@ export const routes: RouteObject[] = [
           { path: "/assessments/new", element: <AssessmentFormPage /> },
           { path: "/assessments/:id/edit", element: <AssessmentFormPage /> },
           { path: "/history", element: <HistoryPage /> },
+          { path: "/import", element: <ImportPage /> },
           // Lazy: keeps Recharts out of the main bundle.
           { path: "/progress", lazy: () => import("./pages/ProgressPage").then((m) => ({ Component: m.ProgressPage })) },
           { path: "/report", lazy: () => import("./pages/ReportPage").then((m) => ({ Component: m.ReportPage })) },

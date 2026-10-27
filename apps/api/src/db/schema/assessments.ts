@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
+import { importJobs } from "./imports";
 
 /** Seeded reference data; must match ASSESSMENT_DEFINITIONS in the shared catalog (tested). */
 export const assessmentDefinitions = sqliteTable(
@@ -44,6 +45,8 @@ export const assessmentResults = sqliteTable(
     footwear: text("footwear"),
     conditionsNote: text("conditions_note"),
     notes: text("notes"),
+    /** Set when the row came from a CSV import (provenance and undo). */
+    importJobId: text("import_job_id").references(() => importJobs.id, { onDelete: "set null" }),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`(unixepoch('subsec') * 1000)`),

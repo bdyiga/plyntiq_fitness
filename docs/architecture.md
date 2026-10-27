@@ -11,7 +11,7 @@ flowchart LR
     Assets[Static Assets<br/>SPA fallback]
     Hono[Hono /api router]
     Auth[Better Auth<br/>/api/auth/*]
-    Mods[Domain modules<br/>athletes · catalog · account<br/>later: workouts · conditioning · assessments · imports]
+    Mods[Domain modules<br/>athletes · catalog · account<br/>exercises · workouts · conditioning · assessments<br/>later: imports · analytics · coach]
     Analytics[Analytics engine<br/>pure TS, no I/O]
     Coach[AI coach orchestrator<br/>M4]
   end
@@ -58,7 +58,7 @@ apps/
       auth/                Better Auth config, session middleware, token stripping
       db/                  Drizzle client + schema (auth.ts, athletes.ts, …)
       lib/                 http helpers, origin check, mailer
-      modules/             athletes/ catalog/ account/ (later: workouts/ …)
+      modules/             athletes/ catalog/ account/ exercises/ workouts/ conditioning/ assessments/
     test/                  workerd integration tests
     wrangler.jsonc
   web/

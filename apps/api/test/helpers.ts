@@ -71,3 +71,16 @@ export const VALID_PROFILE = {
   preferredWeightUnit: "kg",
   preferredDistanceUnit: "m",
 };
+
+/** JSON request as a signed-in user. */
+export function send(client: TestClient, cookie: string, method: string, path: string, body?: unknown) {
+  return client.request(path, { method, cookie, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+}
+
+/** Counts rows matching `where` (test-only raw SQL; never interpolate user input). */
+export async function countRows(table: string, where: string, ...binds: unknown[]) {
+  const row = await env.DB.prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE ${where}`)
+    .bind(...binds)
+    .first<{ n: number }>();
+  return row?.n ?? 0;
+}

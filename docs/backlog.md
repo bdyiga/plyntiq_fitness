@@ -5,7 +5,7 @@ Planning estimate at 15–20 h/week. These are targets, not commitments.
 ## M1: Secure foundation (weeks 1–2) ✅
 Monorepo, Worker and SPA on one origin, D1 and migrations, Better Auth, onboarding and profile, export, deletion, authorization pattern, CI, docs.
 
-## M2: Tracking (weeks 3–4)
+## M2: Tracking (weeks 3–4) ✅
 1. Unit conversion module (`packages/shared/units.ts`) with tests: kg↔lb, m/km/mi, s, cm/in
 2. Exercise catalog seed (lower-body flags) and custom exercises
 3. Workouts and sets CRUD, plus cross-account tests

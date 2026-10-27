@@ -22,6 +22,34 @@
       "when": 1793073458437,
       "tag": "0002_add_other_sport",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793122157410,
+      "tag": "0003_exercises",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793122274988,
+      "tag": "0004_workouts",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793122557854,
+      "tag": "0005_conditioning",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793122694164,
+      "tag": "0006_assessments",
+      "breakpoints": true
     }
   ]
 }

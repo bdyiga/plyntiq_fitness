@@ -4,7 +4,7 @@ An athletic performance intelligence platform built to answer one question: **is
 
 Plyntiq lets athletes log strength and conditioning work and sprint and jump assessments. It then shows, with transparent and deterministic calculations, how changes in their training line up with changes in their measurable performance. An AI coach (planned for Milestone 4) explains those results using only verified numbers. It never claims that one change caused another.
 
-> **Status:** Milestone 1 (secure foundation) is done: accounts, onboarding, profile, data export, account deletion and authorization tests. See [docs/phase-1.md](docs/phase-1.md).
+> **Status:** Milestone 2 (tracking) is done: workout, conditioning and sprint/jump logging with history, edit and delete, on top of the Milestone 1 foundation. See [docs/phase-2.md](docs/phase-2.md) and [docs/phase-1.md](docs/phase-1.md).
 
 ## Stack
 
@@ -41,6 +41,8 @@ npm run db:migrate:local                          # create local D1 tables + see
 npm run dev                                       # API on :8787, web on :5173 (open this one)
 ```
 
+To try it on a phone, run `npm run dev:phone` and scan the QR code it prints. It serves the dev app through a temporary Cloudflare quick tunnel (`https://*.trycloudflare.com`, stops on Ctrl+C), so it works on any network. Anyone with the link can reach it while it runs, so use test data only.
+
 Vite proxies `/api` to the Worker, so the browser only talks to `http://localhost:5173`. In development, password-reset emails are printed to the Wrangler console.
 
 ## Tests
@@ -50,7 +52,7 @@ npm test          # all workspaces
 npm run typecheck
 ```
 
-- `apps/api/test`: integration tests that run inside workerd against a real local D1, with migrations applied. They cover registration, sign-in and sign-out, rate limiting, password reset, cross-account isolation, CSRF, export and cascading deletion.
+- `apps/api/test`: integration tests that run inside workerd against a real local D1, with migrations applied. They cover registration, sign-in and sign-out, rate limiting, password reset, cross-account isolation (profile and every training record type), validation, pagination, CSRF, export and cascading deletion.
 - `apps/web/test`: form validation and route guards.
 - `packages/shared`: schema tests.
 

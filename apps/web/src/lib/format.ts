@@ -18,6 +18,12 @@ export function formatTrainingDate(date: string): string {
   });
 }
 
+/** "26 Oct" for chart axes. */
+export function shortDate(date: string): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(Date.UTC(y!, m! - 1, d!)).toLocaleDateString(undefined, { day: "numeric", month: "short", timeZone: "UTC" });
+}
+
 export function formatNumber(value: number, decimals = 2): string {
   return String(roundTo(value, decimals));
 }

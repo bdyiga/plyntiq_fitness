@@ -38,6 +38,8 @@ export const routes: RouteObject[] = [
           { path: "/assessments/new", element: <AssessmentFormPage /> },
           { path: "/assessments/:id/edit", element: <AssessmentFormPage /> },
           { path: "/history", element: <HistoryPage /> },
+          // Lazy: keeps Recharts out of the main bundle.
+          { path: "/progress", lazy: () => import("./pages/ProgressPage").then((m) => ({ Component: m.ProgressPage })) },
           { path: "/settings", element: <SettingsPage /> },
         ],
       },

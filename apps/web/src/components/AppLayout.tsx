@@ -4,6 +4,7 @@ const links = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/workouts/new", label: "Log" },
   { to: "/history", label: "History" },
+  { to: "/progress", label: "Progress" },
   { to: "/settings", label: "Settings" },
 ];
 
@@ -13,7 +14,7 @@ export function AppLayout() {
       <header className="border-b border-slate-200 bg-white">
         <nav className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <span className="font-bold tracking-tight text-emerald-800">Plyntiq</span>
-          <ul className="flex gap-4 text-sm">
+          <ul className="flex flex-wrap justify-end gap-x-4 gap-y-1 text-sm">
             {links.map((l) => (
               <li key={l.to}>
                 <NavLink

@@ -1,7 +1,9 @@
 import type {
   ApiError,
+  AssessmentAnalyticsDto,
   AssessmentDefinitionDto,
   AssessmentResultDto,
+  ConditioningAnalyticsDto,
   ConditioningSessionDto,
   CreateAssessmentInput,
   CreateConditioningInput,
@@ -10,6 +12,8 @@ import type {
   ExerciseDto,
   MeDto,
   Page,
+  StrengthAnalyticsDto,
+  TranslationDto,
   UpdateAssessmentInput,
   UpdateConditioningInput,
   UpdateWorkoutInput,
@@ -109,7 +113,23 @@ export const api = {
     ),
   deleteAssessment: (id: string) =>
     request<void>(`/api/assessments/${encodeURIComponent(id)}`, { method: "DELETE" }),
+
+  strengthAnalytics: (p: AnalyticsRangeParams & { exerciseId?: string | undefined }) =>
+    request<StrengthAnalyticsDto>(`/api/analytics/strength${pageQuery({ ...p })}`),
+  conditioningAnalytics: (p: AnalyticsRangeParams) =>
+    request<ConditioningAnalyticsDto>(`/api/analytics/conditioning${pageQuery({ ...p })}`),
+  assessmentAnalytics: (definitionId: string, p: AnalyticsRangeParams) =>
+    request<AssessmentAnalyticsDto>(
+      `/api/analytics/assessments/${encodeURIComponent(definitionId)}${pageQuery({ ...p })}`,
+    ),
+  translation: (p: { definitionId: string; exerciseId?: string | undefined }) =>
+    request<TranslationDto>(`/api/analytics/translation${pageQuery({ ...p })}`),
 };
+
+export interface AnalyticsRangeParams {
+  from: string;
+  to: string;
+}
 
 export const queryKeys = {
   me: ["me"] as const,
@@ -121,4 +141,6 @@ export const queryKeys = {
   assessmentDefinitions: ["assessment-definitions"] as const,
   assessments: ["assessments"] as const,
   assessment: (id: string) => ["assessments", id] as const,
+  /** Prefix for analytics queries. They use the default staleTime (0), so they refetch whenever a page mounts. */
+  analytics: ["analytics"] as const,
 };

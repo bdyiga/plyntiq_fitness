@@ -31,3 +31,31 @@ export interface ExerciseDto {
   /** True for the athlete's own exercises; false for the global catalog. */
   isCustom: boolean;
 }
+
+export interface WorkoutSetDto {
+  id: string;
+  exerciseId: string;
+  exerciseName: string;
+  setIndex: number;
+  reps: number;
+  loadValue: number;
+  loadUnit: WeightUnit;
+  /** Canonical load computed by the server; analytics read only this. */
+  loadKg: number;
+  rpe: number | null;
+}
+
+export interface WorkoutDto {
+  id: string;
+  workoutDate: string;
+  notes: string | null;
+  sets: WorkoutSetDto[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** List responses: pass `nextCursor` back as `?cursor=` until it is null. */
+export interface Page<T> {
+  items: T[];
+  nextCursor: string | null;
+}

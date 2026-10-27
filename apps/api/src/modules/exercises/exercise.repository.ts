@@ -1,13 +1,13 @@
 import type { CreateExerciseInput, ExerciseDto } from "@plyntiq/shared";
 import { and, asc, eq, isNull, or, sql } from "drizzle-orm";
-import type { Database } from "../../db/client";
+import { isConstraintError, type Database } from "../../db/client";
 import { exercises } from "../../db/schema";
 
 export class ExerciseNameTakenError extends Error {
   override name = "ExerciseNameTakenError";
 }
 
-/** Global catalog rows plus the athlete's own, excluding archived ones. */
+/** Global catalog rows plus the athlete's own (archived included; callers filter if needed). */
 export function visibleTo(userId: string) {
   return or(isNull(exercises.ownerUserId), eq(exercises.ownerUserId, userId));
 }
@@ -52,10 +52,35 @@ export async function createExercise(db: Database, userId: string, input: Create
     return toDto(row!);
   } catch (err) {
     // A concurrent request created the same name between the check and the insert.
-    if (String((err as Error)?.message ?? "").includes("UNIQUE")) {
+    if (isConstraintError(err, "UNIQUE")) {
       throw new ExerciseNameTakenError(`"${input.name}" already exists`);
     }
     throw err;
+  }
+}
+
+/**
+ * Deletes one of the athlete's custom exercises, or archives it when logged
+ * sets reference it (the foreign key refuses the delete), so history stays
+ * intact. Returns null for global exercises and for other athletes' IDs.
+ */
+export async function removeExercise(
+  db: Database,
+  userId: string,
+  id: string,
+): Promise<"deleted" | "archived" | null> {
+  const owned = and(eq(exercises.id, id), eq(exercises.ownerUserId, userId));
+  try {
+    const deleted = await db.delete(exercises).where(owned).returning({ id: exercises.id });
+    return deleted.length > 0 ? "deleted" : null;
+  } catch (err) {
+    if (!isConstraintError(err, "FOREIGN KEY")) throw err;
+    const archived = await db
+      .update(exercises)
+      .set({ archivedAt: new Date() })
+      .where(and(owned, isNull(exercises.archivedAt)))
+      .returning({ id: exercises.id });
+    return archived.length > 0 ? "archived" : null;
   }
 }
 

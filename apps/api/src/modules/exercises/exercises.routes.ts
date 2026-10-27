@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { requireAuth, requireUserId } from "../../auth/middleware";
 import type { AppEnv } from "../../env";
 import { apiError, parseJson } from "../../lib/http";
-import { createExercise, ExerciseNameTakenError, listExercises } from "./exercise.repository";
+import { createExercise, ExerciseNameTakenError, listExercises, removeExercise } from "./exercise.repository";
 
 export const exerciseRoutes = new Hono<AppEnv>()
   .use(requireAuth)
@@ -21,4 +21,8 @@ export const exerciseRoutes = new Hono<AppEnv>()
       }
       throw err;
     }
+  })
+  .delete("/:id", async (c) => {
+    const result = await removeExercise(c.var.db, requireUserId(c), c.req.param("id"));
+    return result ? c.json({ result }) : apiError(c, 404, "not_found", "Exercise not found");
   });

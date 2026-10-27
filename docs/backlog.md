@@ -15,7 +15,7 @@ Monorepo, Worker and SPA on one origin, D1 and migrations, Better Auth, onboardi
 7. History lists and edit/delete
 8. Extend the export to include the new records
 
-## M3: Analytics + translation (weeks 5–7)
+## M3: Analytics + translation (weeks 5–7): plan in [phase-3.md](phase-3.md)
 1. `packages/analytics`: volume, e1RM, PRs, frequency, consistency, percent change, sRPE (fixture-tested)
 2. Analytics endpoints
 3. Progress charts (Recharts): e1RM trend, weekly volume and frequency, sprint and jump history with method markers

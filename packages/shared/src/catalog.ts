@@ -80,3 +80,6 @@ export const EXERCISES = [
   { id: "calf_raise", name: "Calf raise", category: "other", isLowerBody: true },
   { id: "plank", name: "Plank", category: "other", isLowerBody: false },
 ] as const satisfies readonly { id: string; name: string; category: ExerciseCategory; isLowerBody: boolean }[];
+
+export const CONDITIONING_TYPES = ["run", "sprint", "intervals", "other"] as const;
+export type ConditioningType = (typeof CONDITIONING_TYPES)[number];

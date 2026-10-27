@@ -36,6 +36,13 @@
       "when": 1793122274988,
       "tag": "0004_workouts",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793122557854,
+      "tag": "0005_conditioning",
+      "breakpoints": true
     }
   ]
 }

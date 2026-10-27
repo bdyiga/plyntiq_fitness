@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { ATHLETIC_GOALS, DISTANCE_UNITS, EXERCISE_CATEGORIES, SPORTS, WEIGHT_UNITS } from "./catalog";
+import {
+  ATHLETIC_GOALS,
+  CONDITIONING_TYPES,
+  DISTANCE_UNITS,
+  EXERCISE_CATEGORIES,
+  SPORTS,
+  WEIGHT_UNITS,
+} from "./catalog";
 
 const sportIds = SPORTS.map((s) => s.id) as [string, ...string[]];
 const goalIds = ATHLETIC_GOALS.map((g) => g.id) as [string, ...string[]];
@@ -125,3 +132,49 @@ export const pageQuerySchema = z
     cursor: z.string().max(512).optional(),
   })
   .strict();
+
+export const MAX_DURATION_S = 24 * 3600;
+
+const conditioningFields = {
+  sessionDate: trainingDateSchema,
+  type: z.enum(CONDITIONING_TYPES),
+  /** Seconds; the web form parses "mm:ss" with `parseDuration`. */
+  durationS: z.number().gt(0, "Duration must be more than zero").max(MAX_DURATION_S, "Use 24 hours or less"),
+  distanceValue: z.number().gt(0, "Distance must be more than zero").max(1000).nullable(),
+  distanceUnit: z.enum(DISTANCE_UNITS).nullable(),
+  /** Session RPE on Foster's CR-10 scale (0 = rest, 10 = maximal). */
+  sessionRpe: z.number().min(0).max(10).multipleOf(0.5, "Use whole or half RPE values"),
+  notes: optionalNotes,
+};
+
+/** Distance is optional, but a value and its unit come together. */
+function distancePaired(v: { distanceValue?: number | null; distanceUnit?: string | null }) {
+  return (v.distanceValue == null) === (v.distanceUnit == null);
+}
+const distanceIssue = { message: "Give both a distance and its unit, or neither", path: ["distanceUnit"] };
+
+export const createConditioningSchema = z
+  .object({
+    ...conditioningFields,
+    distanceValue: conditioningFields.distanceValue.optional().transform((v) => v ?? null),
+    distanceUnit: conditioningFields.distanceUnit.optional().transform((v) => v ?? null),
+  })
+  .strict()
+  .refine(distancePaired, distanceIssue);
+
+export const updateConditioningSchema = z
+  .object({
+    sessionDate: conditioningFields.sessionDate.optional(),
+    type: conditioningFields.type.optional(),
+    durationS: conditioningFields.durationS.optional(),
+    distanceValue: conditioningFields.distanceValue.optional(),
+    distanceUnit: conditioningFields.distanceUnit.optional(),
+    sessionRpe: conditioningFields.sessionRpe.optional(),
+    notes: optionalNotes.optional(),
+  })
+  .strict()
+  .refine((v) => Object.keys(v).length > 0, "Nothing to update")
+  .refine((v) => ("distanceValue" in v) === ("distanceUnit" in v) && distancePaired(v), distanceIssue);
+
+export type CreateConditioningInput = z.infer<typeof createConditioningSchema>;
+export type UpdateConditioningInput = z.infer<typeof updateConditioningSchema>;

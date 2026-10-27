@@ -1,4 +1,11 @@
-import type { AthleticGoalId, DistanceUnit, ExerciseCategory, SportId, WeightUnit } from "./catalog";
+import type {
+  AthleticGoalId,
+  ConditioningType,
+  DistanceUnit,
+  ExerciseCategory,
+  SportId,
+  WeightUnit,
+} from "./catalog";
 
 /** Error envelope returned by every non-auth API route. */
 export interface ApiError {
@@ -58,4 +65,19 @@ export interface WorkoutDto {
 export interface Page<T> {
   items: T[];
   nextCursor: string | null;
+}
+
+export interface ConditioningSessionDto {
+  id: string;
+  sessionDate: string;
+  type: ConditioningType;
+  durationS: number;
+  distanceValue: number | null;
+  distanceUnit: DistanceUnit | null;
+  /** Canonical distance computed by the server. */
+  distanceM: number | null;
+  sessionRpe: number;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

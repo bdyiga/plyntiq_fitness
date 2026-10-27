@@ -13,6 +13,7 @@ import { originCheck } from "./lib/origin-check";
 import { exportRoutes } from "./modules/account/export.routes";
 import { exerciseRoutes } from "./modules/exercises/exercises.routes";
 import { workoutRoutes } from "./modules/workouts/workouts.routes";
+import { conditioningRoutes } from "./modules/conditioning/conditioning.routes";
 import { meRoutes } from "./modules/athletes/me.routes";
 import { catalogRoutes } from "./modules/catalog/catalog.routes";
 
@@ -52,6 +53,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route("/me/export", exportRoutes);
   app.route("/exercises", exerciseRoutes);
   app.route("/workouts", workoutRoutes);
+  app.route("/conditioning", conditioningRoutes);
 
   app.notFound((c) => apiError(c, 404, "not_found", "Route not found"));
 

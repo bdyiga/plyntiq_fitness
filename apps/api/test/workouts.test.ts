@@ -1,7 +1,7 @@
 import type { ExerciseDto, Page, WorkoutDto } from "@plyntiq/shared";
 import { env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import { createTestClient, PASSWORD, registerUser, type TestClient } from "./helpers";
+import { createTestClient, PASSWORD, registerUser, send, type TestClient } from "./helpers";
 
 const SQUAT_SET = { exerciseId: "back_squat", reps: 5, loadValue: 100, loadUnit: "kg", rpe: 8 };
 const WORKOUT = {
@@ -10,9 +10,6 @@ const WORKOUT = {
   sets: [SQUAT_SET, { ...SQUAT_SET, loadValue: 225, loadUnit: "lb", rpe: null }],
 };
 
-function send(client: TestClient, cookie: string, method: string, path: string, body?: unknown) {
-  return client.request(path, { method, cookie, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
-}
 
 async function createWorkout(client: TestClient, cookie: string, body: unknown = WORKOUT) {
   const res = await send(client, cookie, "POST", "/api/workouts", body);

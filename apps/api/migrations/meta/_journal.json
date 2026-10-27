@@ -22,6 +22,13 @@
       "when": 1793073458437,
       "tag": "0002_add_other_sport",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793122157410,
+      "tag": "0003_exercises",
+      "breakpoints": true
     }
   ]
 }

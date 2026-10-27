@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ATHLETIC_GOALS, DISTANCE_UNITS, SPORTS, WEIGHT_UNITS } from "./catalog";
+import { ATHLETIC_GOALS, DISTANCE_UNITS, EXERCISE_CATEGORIES, SPORTS, WEIGHT_UNITS } from "./catalog";
 
 const sportIds = SPORTS.map((s) => s.id) as [string, ...string[]];
 const goalIds = ATHLETIC_GOALS.map((g) => g.id) as [string, ...string[]];
@@ -42,3 +42,19 @@ export const registerFormSchema = z
   .strict();
 
 export type RegisterFormInput = z.infer<typeof registerFormSchema>;
+
+/** Collapses internal whitespace so "Back  squat" and "Back squat" are one name. */
+const displayName = z
+  .string()
+  .transform((s) => s.trim().replace(/\s+/g, " "))
+  .pipe(z.string().min(1, "Enter a name").max(80, "Use 80 characters or fewer"));
+
+export const createExerciseSchema = z
+  .object({
+    name: displayName,
+    category: z.enum(EXERCISE_CATEGORIES),
+    isLowerBody: z.boolean(),
+  })
+  .strict();
+
+export type CreateExerciseInput = z.infer<typeof createExerciseSchema>;

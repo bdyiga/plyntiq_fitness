@@ -11,6 +11,7 @@ import { apiError, ValidationError } from "./lib/http";
 import { mailerFor } from "./lib/mailer";
 import { originCheck } from "./lib/origin-check";
 import { exportRoutes } from "./modules/account/export.routes";
+import { exerciseRoutes } from "./modules/exercises/exercises.routes";
 import { meRoutes } from "./modules/athletes/me.routes";
 import { catalogRoutes } from "./modules/catalog/catalog.routes";
 
@@ -48,6 +49,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.use(loadSession);
   app.route("/me", meRoutes);
   app.route("/me/export", exportRoutes);
+  app.route("/exercises", exerciseRoutes);
 
   app.notFound((c) => apiError(c, 404, "not_found", "Route not found"));
 

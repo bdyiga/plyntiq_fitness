@@ -1,4 +1,4 @@
-import type { AthleticGoalId, DistanceUnit, SportId, WeightUnit } from "./catalog";
+import type { AthleticGoalId, DistanceUnit, ExerciseCategory, SportId, WeightUnit } from "./catalog";
 
 /** Error envelope returned by every non-auth API route. */
 export interface ApiError {
@@ -21,4 +21,13 @@ export interface AthleteProfileDto {
 export interface MeDto {
   user: { id: string; name: string; email: string; emailVerified: boolean; createdAt: string };
   profile: AthleteProfileDto | null;
+}
+
+export interface ExerciseDto {
+  id: string;
+  name: string;
+  category: ExerciseCategory;
+  isLowerBody: boolean;
+  /** True for the athlete's own exercises; false for the global catalog. */
+  isCustom: boolean;
 }
